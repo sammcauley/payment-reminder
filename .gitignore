@@ -6,7 +6,9 @@ venv
 *.pem
 
 # Terraform
-*.tfstate.*
+.terraform
+.terraform.lock.hcl
+*.tfstate
 terraform.tfvars
 *.tfplan
 *.backup

@@ -1,1 +1,18 @@
+# venv
 venv
+
+# GCP credentials
+*.json
+*.pem
+
+# Terraform
+*.tfstate.*
+terraform.tfvars
+*.tfplan
+*.backup
+
+# VSCode
+.vscode/
+
+# Jupyter
+*.ipynb*

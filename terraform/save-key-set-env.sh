@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Set the filename where the key will be saved
-KEY_FILE="./sheets-key.json"
+KEY_FILE="$(pwd)/sheets-key.json"
 
 # Fetch the private key JSON from Terraform output and save to file
-terraform output -raw sheets_key_json > "$KEY_FILE"
+terraform output -raw sheets_key_json | base64 --decode > "$KEY_FILE"
 
 # Check if file was created successfully
 if [[ -f "$KEY_FILE" ]]; then

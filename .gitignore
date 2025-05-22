@@ -18,3 +18,5 @@ terraform.tfvars
 
 # Jupyter
 *.ipynb*
+
+.env

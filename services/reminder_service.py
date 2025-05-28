@@ -7,14 +7,17 @@ from utils.strings import safe_str
 def filter_due_reminders(df: pd.DataFrame) -> pd.DataFrame:
     today = datetime.today().date()
 
+    df = df.copy()
+    df["PAY DATE"] = pd.to_datetime(df["PAY DATE"], errors="coerce")
+
     df = df[df["PAY DATE"].notna()]
 
-    due_df = df[
+    df["DAYS_UNTIL_PAY"] = (df["PAY DATE"] - pd.Timestamp(today)).dt.days
+
+    return df[
         (df["TO PAY/ALREADY PAID"] == "To pay") &
-        (df["PAY DATE"].apply(lambda d: d.date() - today == timedelta(days=2)))
+        (df["DAYS_UNTIL_PAY"] == 2)
     ]
-    
-    return due_df
 
 def build_reminder_row_html(row: pd.Series) -> Optional[str]:
     try:
@@ -58,7 +61,6 @@ def build_reminder_message_html(data) -> Optional[str]:
 
     pay_date = filtered_df.iloc[0]["PAY DATE"].strftime("%d/%m/%y")
 
-    # Start HTML message
     html_parts = [
         "<h2>Payment Reminder! <i class='fa-solid fa-bell'></i></h2>",
         f"<p>You have the following payments due on <strong>{pay_date}</strong>:</p>",

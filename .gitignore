@@ -20,3 +20,5 @@ terraform.tfvars
 *.ipynb*
 
 .env
+documents/
+emails.json

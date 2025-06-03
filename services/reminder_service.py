@@ -39,11 +39,11 @@ def build_reminder_row_html(row: pd.Series) -> Optional[str]:
             amount = f"{local_amount} (around £{gbp_amount})"
 
         if method.lower() == "card" and card:
-            payment = f"from {card}"
+            payment = f"from {card} 💳"
         elif method.lower() == "cash":
-            payment = "in cash"
+            payment = "in cash 💷"
         elif method:
-            payment = f"via {method.lower()}"
+            payment = f"{method.lower()} 💰"
         else:
             payment = ""
 
@@ -59,11 +59,12 @@ def build_reminder_message_html(data) -> Optional[str]:
     if filtered_df.empty:
         return None
 
-    pay_date = filtered_df.iloc[0]["PAY DATE"].strftime("%d/%m/%y")
+    pay_date_obj = filtered_df.iloc[0]["PAY DATE"]
+    pay_date_str = pay_date_obj.strftime("%d/%m/%y")
 
     html_parts = [
-        "<h2>Payment Reminder! <i class='fa-solid fa-bell'></i></h2>",
-        f"<p>You have the following payments due on <strong>{pay_date}</strong>:</p>",
+        "🔔 Payment Reminder!",
+        f"<p>You have the following payments due on <strong>{pay_date_str}</strong>:</p>",
         "<ul>"
     ]
 
@@ -74,7 +75,7 @@ def build_reminder_message_html(data) -> Optional[str]:
 
     html_parts.extend([
         "</ul>",
-        "<p><strong>Make sure you have enough money for the payments!<i class='fa-solid fa-money-bill-wave'></i></strong></p>"
+        "<p><strong>Make sure you have enough money for the payments! 💱</p>"
     ])
 
-    return " ".join(html_parts)
+    return " ".join(html_parts), pay_date_str

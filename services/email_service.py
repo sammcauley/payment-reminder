@@ -2,6 +2,7 @@ import smtplib
 import json
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.utils import parseaddr
 
 GMAIL_SMTP_SERVER = "smtp.gmail.com"
 GMAIL_SMTP_PORT = 587
@@ -21,8 +22,9 @@ def send_email(subject: str, html_content: str, recipient_email: str, sender_ema
         message["From"] = sender_email
         message["To"] = recipient_email
 
-        part = MIMEText(html_content, "html")
-        message.attach(part)
+        plain_text = "This is a payment reminder. Please view the email in an HTML-compatible client."
+        message.attach(MIMEText(plain_text, "plain"))
+        message.attach(MIMEText(html_content, "html", "utf-8"))
 
         with smtplib.SMTP(GMAIL_SMTP_SERVER, GMAIL_SMTP_PORT) as server:
             server.starttls()
@@ -41,6 +43,20 @@ def send_reminders_to_all(html_message: str, subject:str, json_path: str, sender
         print("❌ No recipients found.")
         return
     
+    failed = []
+    
     for name, email in recipients.items():
+        _, addr = parseaddr(email)
+        if "@" not in addr:
+            print(f"❌ Invalid email address for {name}: {email}")
+            continue
+
         print(f"Sending email reminder to {name} <{email}>...")
-        send_email(subject, html_message, email, sender_email, sender_password)
+        success = send_email(subject, html_message, email, sender_email, sender_password)
+        if not success:
+            failed.append(email)
+
+    if failed:
+        print(f"❌ Failed to send reminders to {len(failed)} recipients: {', '.join(failed)}")
+    else:
+        print("✅ All reminders sent successfully.")

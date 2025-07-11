@@ -4,21 +4,10 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.utils import parseaddr
 from google.cloud import secretmanager
+from utils.secrets import get_recipients
 
 GMAIL_SMTP_SERVER = "smtp.gmail.com"
 GMAIL_SMTP_PORT = 587
-
-def load_email_recipients() -> dict:
-    try:
-        client = secretmanager.SecretManagerServiceClient()
-        name = "projects/995259718626/secrets/receiver-emails/versions/1"
-        response = client.access_secret_version(request={"name": name})
-        payload = response.payload.data.decode("UTF-8")
-        emails = json.loads(payload)
-        return emails
-    except Exception as e:
-        print(f"Error loading email recipients: {e}")
-        return {}
     
 def send_email(subject: str, html_content: str, recipient_email: str, sender_email: str, sender_password: str) -> bool:
     try:
@@ -43,7 +32,7 @@ def send_email(subject: str, html_content: str, recipient_email: str, sender_ema
         return False
     
 def send_reminders_to_all(html_message: str, subject:str, sender_email: str, sender_password: str):
-    recipients = load_email_recipients()
+    recipients = get_recipients()
     if not recipients:
         print("❌ No recipients found.")
         return

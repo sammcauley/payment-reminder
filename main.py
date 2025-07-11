@@ -1,16 +1,13 @@
-import os
 from services.sheets_service import read_sheet
 from services.reminder_service import build_reminder_message_html
 from services.email_service import send_reminders_to_all
-from dotenv import load_dotenv
+from utils.secrets import get_gmail_password, get_gmail_sender, get_spreadsheet_id, get_spreadsheet_range, get_recipients
 
-load_dotenv()
-
-SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
-RANGE = os.getenv("RANGE")
-EMAILS_JSON_PATH = os.getenv("EMAILS_JSON_PATH")
-SENDER_EMAIL = os.getenv("GMAIL_ADDRESS")
-SENDER_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
+SPREADSHEET_ID = get_spreadsheet_id()
+RANGE = get_spreadsheet_range()
+EMAIL_RECIPIENTS = get_recipients()
+SENDER_EMAIL = get_gmail_sender()
+SENDER_PASSWORD = get_gmail_password()
 
 
 def main():
@@ -37,7 +34,6 @@ def main():
     send_reminders_to_all(
         html_message=html_message,
         subject=subject,
-        json_path=EMAILS_JSON_PATH,
         sender_email=SENDER_EMAIL,
         sender_password=SENDER_PASSWORD
     )

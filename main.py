@@ -15,7 +15,7 @@ def run_reminder():
         SENDER_PASSWORD = get_gmail_password()
 
         sheet_data = read_sheet(spreadsheet_id=SPREADSHEET_ID, range_name=RANGE)
-        html_result = build_reminder_message_html
+        html_result = build_reminder_message_html(sheet_data)
 
         if not html_result:
             return jsonify({"status": "No payments due"}), 200

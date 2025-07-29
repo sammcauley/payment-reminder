@@ -20,7 +20,7 @@ def run_reminder():
         if not html_result:
             return jsonify({"status": "No payments due"}), 200
 
-        html_message, pay_date = html_message
+        html_message, pay_date = html_result
         subject = f"💰 Upcoming Payment on {pay_date}"
 
         send_reminders_to_all(
@@ -35,7 +35,4 @@ def run_reminder():
     except Exception as e:
         print(f"Error occurred: {e}")
         return jsonify({"error": str(e)}), 500
-
-
-if __name__ == "__main__":
-    run_reminder()
+    

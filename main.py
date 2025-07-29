@@ -3,6 +3,7 @@ from services.reminder_service import build_reminder_message_html
 from services.email_service import send_reminders_to_all
 from utils.secrets import get_gmail_password, get_gmail_sender, get_spreadsheet_id, get_spreadsheet_range
 from flask import Flask, jsonify
+import os
 
 app = Flask(__name__)
 
@@ -35,4 +36,8 @@ def run_reminder():
     except Exception as e:
         print(f"Error occurred: {e}")
         return jsonify({"error": str(e)}), 500
+    
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
     

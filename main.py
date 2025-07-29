@@ -6,7 +6,7 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET", "POST"])
 def run_reminder():
     try:
         SPREADSHEET_ID = get_spreadsheet_id()
